@@ -19,7 +19,7 @@
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
 ---
-### Files Submitted & Code Quality
+### Files Submitted
 
 #### 1. Submission includes the folowing files
 
@@ -63,13 +63,13 @@ The model includes RELU layers to introduce nonlinearity (code line 20), and the
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model contains dropout layers in order to reduce overfitting (model.py lines 21). 
-
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code line 10-16). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+As can be seen above after normailizing and cropping the images, i implemented the NVIDIA model.
+I did not tinker with this model much. All i add was to add a dropout layer.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 25).
+The model used an adam optimizer and i did not make any updates.
+When i made updates to the adama optimizer paramaters, my model did not improve much so i stuck witht the default
 
 #### 4. Appropriate training data
 
@@ -97,9 +97,31 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
+The final model architectureconsisted of a convolution neural network with the following layers and layer sizes
 
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+| Layer         		|     Description	        					| 
+|:---------------------:|:---------------------------------------------:| 
+| Input         		| 160x320x3 RGB image							|
+| Normalization			|												|
+| Cropping				|												|
+| Convolution 5x5     	| 2x2 stride, outputs 31x158x24 				|
+| RELU					|												|
+| Convolution 5x5     	| 2x2 stride, outputs 14x77x36 					|
+| RELU					|												|
+| Convolution 5x5     	| 2x2 stride, outputs 5x37x48 					|
+| RELU					|												|
+| Convolution 3x3     	| 1x1 stride, outputs 3x35x64 					|
+| RELU					|												|
+| Convolution 3x3     	| 1x1 stride, outputs 1x33x64 					|
+| RELU					|												|
+| Flatten				| 2112 outputs									|
+| Fully connected		| 2112 inputs 100 outputs						|
+| Dropout				| 0.4 											|
+| Fully connected		| 100  inputs  50 outputs						|
+| Fully connected		| 50   inputs  10 outputs						|
+| Fully connected		| 10   inputs  1  outputs						|
+|						|												|
+|						|												|
 
 ![alt text][image1]
 
