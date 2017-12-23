@@ -1,19 +1,11 @@
 # **Behavioral Cloning** 
 
-## Writeup Template
-
-### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
+## Writeup
 
 ---
 
 **Behavioral Cloning Project**
 
-The goals / steps of this project are the following:
-* Use the simulator to collect data of good driving behavior
-* Build, a convolution neural network in Keras that predicts steering angles from images
-* Train and validate the model with a training and validation set
-* Test that the model successfully drives around track one without leaving the road
-* Summarize the results with a written report
 
 
 [//]: # (Image References)
@@ -35,12 +27,15 @@ The goals / steps of this project are the following:
 #### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
 
 My project includes the following files:
+* P3.ipynb where initial prototyping was performed
+* P3_generator.ipynb which has the final model using fit generator
 * model.py containing the script to create and train the model
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
-* writeup_report.md or writeup_report.pdf summarizing the results
+* writeup_report.md
 
 #### 2. Submission includes functional code
+
 Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
 ```sh
 python drive.py model.h5
@@ -56,7 +51,40 @@ The model.py file contains the code for training and saving the convolution neur
 
 My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18). 
+The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18).
+
+____________________________________________________________________________________________________
+Layer (type)                     Output Shape          Param #     Connected to                     
+====================================================================================================
+lambda_2 (Lambda)                (None, 160, 320, 3)   0           lambda_input_2[0][0]             
+____________________________________________________________________________________________________
+cropping2d_2 (Cropping2D)        (None, 65, 320, 3)    0           lambda_2[0][0]                   
+____________________________________________________________________________________________________
+convolution2d_6 (Convolution2D)  (None, 31, 158, 24)   1824        cropping2d_2[0][0]               
+____________________________________________________________________________________________________
+convolution2d_7 (Convolution2D)  (None, 14, 77, 36)    21636       convolution2d_6[0][0]            
+____________________________________________________________________________________________________
+convolution2d_8 (Convolution2D)  (None, 5, 37, 48)     43248       convolution2d_7[0][0]            
+____________________________________________________________________________________________________
+convolution2d_9 (Convolution2D)  (None, 3, 35, 64)     27712       convolution2d_8[0][0]            
+____________________________________________________________________________________________________
+convolution2d_10 (Convolution2D) (None, 1, 33, 64)     36928       convolution2d_9[0][0]            
+____________________________________________________________________________________________________
+flatten_2 (Flatten)              (None, 2112)          0           convolution2d_10[0][0]           
+____________________________________________________________________________________________________
+dense_5 (Dense)                  (None, 100)           211300      flatten_2[0][0]                  
+____________________________________________________________________________________________________
+dropout_2 (Dropout)              (None, 100)           0           dense_5[0][0]                    
+____________________________________________________________________________________________________
+dense_6 (Dense)                  (None, 50)            5050        dropout_2[0][0]                  
+____________________________________________________________________________________________________
+dense_7 (Dense)                  (None, 10)            510         dense_6[0][0]                    
+____________________________________________________________________________________________________
+dense_8 (Dense)                  (None, 1)             11          dense_7[0][0]                    
+====================================================================================================
+Total params: 348,219
+Trainable params: 348,219
+Non-trainable params: 0
 
 #### 2. Attempts to reduce overfitting in the model
 
