@@ -7,17 +7,6 @@
 **Behavioral Cloning Project**
 
 
-
-[//]: # (Image References)
-
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
-
 ---
 ### Files Submitted
 
@@ -32,7 +21,7 @@ My project includes the following files:
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md
 
-After carefully following the project guidelines, i started implementing the project in an ipython notebook. I called this "P3.ipynb". I do some data exploration and output some sample images as well.
+After carefully following the project guidelines, I started implementing the project in an ipython notebook. I called this "P3.ipynb". I do some data exploration and output some sample images as well.
 My intention in this notebook was to keep things simple and start building the model, the way we did in the project videos.
 
 #### 2. Driving car in Autonomous Mode
@@ -50,54 +39,87 @@ The model.py file contains the code for training and saving the convolution neur
 P3_generator.ipynb
 ```
 
+The main difference between the 2 notebooks is that one has a generator and the other does not.
 
-### Model Architecture and Training Strategy
+### Data Exploration and Initial Setup
 
-#### 1. An appropriate model architecture has been employed
+#### 1. Data Exploration
 
-My model consists of a convolution neural network with 3x3 filter sizes and depths between 32 and 128 (model.py lines 18-24) 
+I used the the notebook below to do some initial data exploration
+```sh
+P3.ipynb
+```
 
-The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18).
+In the above notebook, i gauged the histogram of the various steering angles.
 
 
+#### 2. Reading in images
 
-#### 2. Attempts to reduce overfitting in the model
+I used cv2.imread to read in my images. In my model, i read in the center, left and right images.
+I also flip the center image and thereby increase the number of images in the data set. Thus essentially i end up having images that is equal 4 times the number of data points. 
 
-As can be seen above after normailizing and cropping the images, i implemented the NVIDIA model.
-I did not tinker with this model much. All i add was to add a dropout layer.
+I also made a mistake in this section that i realized later on in the project. The images are read using BGR format but i need the images to be in RGB format. I converted all the images i read into RGB format. The model behaved in a very weird way without this update; there were occassions when the car just went off course when it should not have done so. I should have read the project guideline carefully. There was a warning about this.
 
-#### 3. Model parameter tuning
+In the notebook
+```sh
+P3.ipynb
+```
 
-The model used an adam optimizer and i did not make any updates.
-When i made updates to the adama optimizer paramaters, my model did not improve much so i stuck witht the default
+I read in images, flip images and store them all in memory. I did this for initial prototyping work.
 
-#### 4. Appropriate training data
+In the notebook
+```sh
+P3_generator.ipynb
+```
 
-Training data was chosen to keep the vehicle driving on the road. I used a combination of center lane driving, recovering from the left and right sides of the road ... 
+I actually have a generator.
 
-For details about how I created the training data, see the next section. 
+#### 3. Splitting the Data
+
+I split the data into a training and validation set. This can be clearly seen in both my ipython notebooks. This is handled a little differently based on which notebook is being looked at.
+
+The final model which is based of the notebook "P3 generator" essentially splits the lines of the original csv file into training and validation samples.
+
+#### 4. Generator
+
+As explained in the project videos, i have setup a generator. This is way more efficient even on an Amazon EC2 instance. I used the template provided in the proejct and made modifications to the number of images read. I had to do this since i was reading in center, left and right images. I also flip the center image. I then call this generator for both the training and validation samples.
+
 
 ### Model Architecture and Training Strategy
 
 #### 1. Solution Design Approach
 
-The overall strategy for deriving a model architecture was to ...
+The overall strategy was to come to a final solution after following the individual steps mentioned in the project guideline videos. I started by reading the center images from the udacity provided data. I slowly built on this by cropping images and then implementing the NVIDIA model. The NVIDIA model is really simple to implement especially with Keras. The activation function I used was "RELU".
 
-My first step was to use a convolution neural network model similar to the ... I thought this model might be appropriate because ...
+After this, to ensure that my environment was setup fine, i built the model on Amazon EC2 and transferred the model to my Windows machine using WINSCP to start gauging how well my model worked in the autonomous mode.
 
-In order to gauge how well the model was working, I split my image and steering angle data into a training and validation set. I found that my first model had a low mean squared error on the training set but a high mean squared error on the validation set. This implied that the model was overfitting. 
+To my surprise, the model worked reasonably well though it did go off the track. I then proceeded to add the left and right images as well. The important thing to keep in mind is that when adding left and right images, corresponding values should also be added for the angle measurements. If we don't do this we will get an error since there will be a mismatch in the total number of images and angle measurements. I also add flipped images to my set of images. The flipped image was essentially flipping the center image. The angle measurement for the corresponding flipped image was the negative of the angle measurement of the original center image.
 
-To combat the overfitting, I modified the model so that ...
+Using fit generator i generated my model. When i ran the model and checked the simulator on autonomous mode, to my surprise i was amazed to see that the car drove very well. There after, i had to only do minor tweaks to my model. I reduced the number of epochs to two. I also added a dropout layer between the first and second fully connected layer to reduce overfitting.
 
-Then I ... 
+Perhaps the most important adjustment i made in my model was to adjust the angle measurements for the left and right images. As mentioned previously we have a left, center and right image but one value for steering measurement.  For the left angle measurement I add a factor of 0.0085. For the right angle measurement I subtract a factor of 0.0085. I experimented with various values and decided on this after a lot of trials.
 
-The final step was to run the simulator to see how well the car was driving around track one. There were a few spots where the vehicle fell off the track... to improve the driving behavior in these cases, I ....
 
-At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
+At the end of all these updates, the car was able to driver around track 1 without going off. This can be seen in the video below which shows the card being driven for three laps.
+```sh
+P3_generator.ipynb
+```
 
-#### 2. Final Model Architecture
 
-The final model architectureconsisted of a convolution neural network with the following layers and layer sizes
+#### 2. Model parameter tuning
+
+The model used an adam optimizer and i did not make any updates.
+When i made updates to the adam optimizer paramaters, my model did not improve much so i stuck with the default
+
+#### 3. Training data
+
+I used the udacity provided training data. As can be seen from the submission video, I could easily drive around track 1 for three laps without any issues. I did generate my own data; however I did not need them atleast to test on Track 1. I suspect I will definitely need to use my own training data and enhance my model using various augmentation techniques to drive around the more challenging track. I intend to try this soon at a later date.
+
+#### 4. Final Model Architecture
+
+The final model architecture consisted of a convolution neural network with the following layers and layer sizes.
+
+As can be seen below after normailizing and cropping the images, I implemented the NVIDIA model. I did not tinker with this model much. All I add was to add a dropout layer.
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
@@ -123,32 +145,7 @@ The final model architectureconsisted of a convolution neural network with the f
 |						|												|
 |						|												|
 
-![alt text][image1]
 
-#### 3. Creation of the Training Set & Training Process
+#### 3. Final Thoughts
 
-To capture good driving behavior, I first recorded two laps on track one using center lane driving. Here is an example image of center lane driving:
-
-![alt text][image2]
-
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
-
-![alt text][image3]
-![alt text][image4]
-![alt text][image5]
-
-Then I repeated this process on track two in order to get more data points.
-
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
-
-![alt text][image6]
-![alt text][image7]
-
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
-
-
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.
+I have been keeping things simple in all my projects as i ramp up on this rather exciting journey. I follow the guidelines and the various explanation videos to setup the various code templates and realize that doing this helps a lot in making a lot of progress. I re-use various code templates provided in the guidelines as well. This can be seen in my ipython notebooks. One thing that gets lost  is the various incremental additions i made to the initial model.In the near future, I have to enhance my model using advanced image augmentation techniques to make my model better. As mentioned previously, i have a hunch that i will need to do this for running the car in the more challenging track.
