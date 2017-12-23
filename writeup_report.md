@@ -20,6 +20,7 @@ My project includes the following files:
 * drive.py for driving the car in autonomous mode
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md
+* wideo.mp4 that shows the car driving around 3 laps of track 1
 
 After carefully following the project guidelines, I started implementing the project in an ipython notebook. I called this "P3.ipynb". I do some data exploration and output some sample images as well.
 My intention in this notebook was to keep things simple and start building the model, the way we did in the project videos.
@@ -34,7 +35,7 @@ python drive.py model.h5
 
 #### 3. Model code
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works. Iy my case, all i had to do to develop this file was to copy over the various code cells from the ipython notebook
+The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works. In my case, all i had to do to develop this file was to copy over the various code cells from the ipython notebook
 ```sh
 P3_generator.ipynb
 ```
@@ -55,10 +56,10 @@ In the above notebook, i gauged the histogram of the various steering angles.
 
 #### 2. Reading in images
 
-I used cv2.imread to read in my images. In my model, i read in the center, left and right images.
-I also flip the center image and thereby increase the number of images in the data set. Thus essentially i end up having images that is equal 4 times the number of data points. 
+I used cv2.imread to read in my images. In my model, I read in the center, left and right images.
+I also flip the center image and thereby increase the number of images in the data set. Thus essentially I end up having images that is equal 4 times the number of data points. 
 
-I also made a mistake in this section that i realized later on in the project. The images are read using BGR format but i need the images to be in RGB format. I converted all the images i read into RGB format. The model behaved in a very weird way without this update; there were occassions when the car just went off course when it should not have done so. I should have read the project guideline carefully. There was a warning about this.
+I also made a mistake in this section that I realized later on in the project. The images are read using BGR format but i need the images to be in RGB format. I converted all the images i read into RGB format. The model behaved in a very weird way without this update; there were occassions when the car just went off course when it should not have done so. I should have read the project guidelines carefully. There was a warning about this.
 
 In the notebook
 ```sh
@@ -100,16 +101,16 @@ Using fit generator i generated my model. When i ran the model and checked the s
 Perhaps the most important adjustment i made in my model was to adjust the angle measurements for the left and right images. As mentioned previously we have a left, center and right image but one value for steering measurement.  For the left angle measurement I add a factor of 0.0085. For the right angle measurement I subtract a factor of 0.0085. I experimented with various values and decided on this after a lot of trials.
 
 
-At the end of all these updates, the car was able to driver around track 1 without going off. This can be seen in the video below which shows the card being driven for three laps.
+At the end of all these updates, the car was able to driver around track 1 without going off. This can be seen in the video below which shows the car being driven for three laps.
 ```sh
-P3_generator.ipynb
+video.mp4
 ```
 
 
 #### 2. Model parameter tuning
 
 The model used an adam optimizer and i did not make any updates.
-When i made updates to the adam optimizer paramaters, my model did not improve much so i stuck with the default
+When i made updates to the adam optimizer parameters, my model did not improve much so i stuck with the default
 
 #### 3. Training data
 
@@ -119,13 +120,13 @@ I used the udacity provided training data. As can be seen from the submission vi
 
 The final model architecture consisted of a convolution neural network with the following layers and layer sizes.
 
-As can be seen below after normailizing and cropping the images, I implemented the NVIDIA model. I did not tinker with this model much. All I add was to add a dropout layer.
+As can be seen below after normalizing and cropping the images, I implemented the NVIDIA model. I did not tinker with this model much. All I add was to add a dropout layer.
 
 | Layer         		|     Description	        					| 
 |:---------------------:|:---------------------------------------------:| 
 | Input         		| 160x320x3 RGB image							|
-| Normalization			|												|
-| Cropping				|												|
+| Normalization			| Divide by 255 and subtract 0.5				|
+| Cropping				| Remove 70 pixels from top and 25 from bottom	|
 | Convolution 5x5     	| 2x2 stride, outputs 31x158x24 				|
 | RELU					|												|
 | Convolution 5x5     	| 2x2 stride, outputs 14x77x36 					|
@@ -146,6 +147,6 @@ As can be seen below after normailizing and cropping the images, I implemented t
 |						|												|
 
 
-#### 3. Final Thoughts
+#### 5. Final Thoughts
 
-I have been keeping things simple in all my projects as i ramp up on this rather exciting journey. I follow the guidelines and the various explanation videos to setup the various code templates and realize that doing this helps a lot in making a lot of progress. I re-use various code templates provided in the guidelines as well. This can be seen in my ipython notebooks. One thing that gets lost  is the various incremental additions i made to the initial model.In the near future, I have to enhance my model using advanced image augmentation techniques to make my model better. As mentioned previously, i have a hunch that i will need to do this for running the car in the more challenging track.
+I have been keeping things simple in all my projects as I ramp up on this rather exciting journey. I follow the guidelines and the various explanation videos to setup the various code templates and realize that doing this helps a lot in making a lot of progress. I re-use various code templates provided in the guidelines as well. This can be seen in my ipython notebooks. One thing that gets lost  are the various incremental additions I made to the initial model. In the near future, I have to enhance my model using advanced image augmentation techniques to make my model better. As mentioned previously, I have a hunch that I will need to do this for running the car in the more challenging track.
