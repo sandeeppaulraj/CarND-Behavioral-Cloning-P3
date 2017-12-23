@@ -18,15 +18,13 @@
 [image6]: ./examples/placeholder_small.png "Normal Image"
 [image7]: ./examples/placeholder_small.png "Flipped Image"
 
-## Rubric Points
-### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
-
 ---
 ### Files Submitted & Code Quality
 
-#### 1. Submission includes all required files and can be used to run the simulator in autonomous mode
+#### 1. Submission includes the folowing files
 
 My project includes the following files:
+
 * P3.ipynb where initial prototyping was performed
 * P3_generator.ipynb which has the final model using fit generator
 * model.py containing the script to create and train the model
@@ -34,16 +32,24 @@ My project includes the following files:
 * model.h5 containing a trained convolution neural network 
 * writeup_report.md
 
-#### 2. Submission includes functional code
+After carefully following the project guidelines, i started implementing the project in an ipython notebook. I called this "P3.ipynb". I do some data exploration and output some sample images as well.
+My intention in this notebook was to keep things simple and start building the model, the way we did in the project videos.
 
-Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing 
+#### 2. Driving car in Autonomous Mode
+
+Using the Udacity provided simulator and my drive.py file, the car can be driven autonomously around the track by executing
+
 ```sh
 python drive.py model.h5
 ```
 
-#### 3. Submission code is usable and readable
+#### 3. Model code
 
-The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works.
+The model.py file contains the code for training and saving the convolution neural network. The file shows the pipeline I used for training and validating the model, and it contains comments to explain how the code works. Iy my case, all i had to do to develop this file was to copy over the various code cells from the ipython notebook
+```sh
+P3_generator.ipynb
+```
+
 
 ### Model Architecture and Training Strategy
 
@@ -53,38 +59,7 @@ My model consists of a convolution neural network with 3x3 filter sizes and dept
 
 The model includes RELU layers to introduce nonlinearity (code line 20), and the data is normalized in the model using a Keras lambda layer (code line 18).
 
-____________________________________________________________________________________________________
-Layer (type)                     Output Shape          Param #     Connected to                     
-====================================================================================================
-lambda_2 (Lambda)                (None, 160, 320, 3)   0           lambda_input_2[0][0]             
-____________________________________________________________________________________________________
-cropping2d_2 (Cropping2D)        (None, 65, 320, 3)    0           lambda_2[0][0]                   
-____________________________________________________________________________________________________
-convolution2d_6 (Convolution2D)  (None, 31, 158, 24)   1824        cropping2d_2[0][0]               
-____________________________________________________________________________________________________
-convolution2d_7 (Convolution2D)  (None, 14, 77, 36)    21636       convolution2d_6[0][0]            
-____________________________________________________________________________________________________
-convolution2d_8 (Convolution2D)  (None, 5, 37, 48)     43248       convolution2d_7[0][0]            
-____________________________________________________________________________________________________
-convolution2d_9 (Convolution2D)  (None, 3, 35, 64)     27712       convolution2d_8[0][0]            
-____________________________________________________________________________________________________
-convolution2d_10 (Convolution2D) (None, 1, 33, 64)     36928       convolution2d_9[0][0]            
-____________________________________________________________________________________________________
-flatten_2 (Flatten)              (None, 2112)          0           convolution2d_10[0][0]           
-____________________________________________________________________________________________________
-dense_5 (Dense)                  (None, 100)           211300      flatten_2[0][0]                  
-____________________________________________________________________________________________________
-dropout_2 (Dropout)              (None, 100)           0           dense_5[0][0]                    
-____________________________________________________________________________________________________
-dense_6 (Dense)                  (None, 50)            5050        dropout_2[0][0]                  
-____________________________________________________________________________________________________
-dense_7 (Dense)                  (None, 10)            510         dense_6[0][0]                    
-____________________________________________________________________________________________________
-dense_8 (Dense)                  (None, 1)             11          dense_7[0][0]                    
-====================================================================================================
-Total params: 348,219
-Trainable params: 348,219
-Non-trainable params: 0
+
 
 #### 2. Attempts to reduce overfitting in the model
 
